@@ -60,15 +60,50 @@
 							"let respData = pm.response.json();\r",
 							"let reqData = JSON.parse(pm.request.body);\r",
 							"\r",
-							"pm.test(\"Проверка структуры json\", function () {\r",
-							"     pm.expect(respData).to.have.property('person');\r",
-							"     pm.expect(respData.person).to.have.property('u_age');\r",
-							"     pm.expect(respData.person).to.have.property('u_name');\r",
-							"     pm.expect(respData.person).to.have.property('u_salary_1_5_year');\r",
-							"     pm.expect(respData).to.have.property('qa_salary_after_12_months');\r",
-							"     pm.expect(respData).to.have.property('qa_salary_after_6_months');\r",
-							"     pm.expect(respData).to.have.property('start_qa_salary');\r",
+							"// pm.test(\"Проверка структуры json\", function () {\r",
+							"//      pm.expect(respData).to.have.property('person');\r",
+							"//      pm.expect(respData.person).to.have.property('u_age');\r",
+							"//      pm.expect(respData.person).to.have.property('u_name');\r",
+							"//      pm.expect(respData.person).to.have.property('u_salary_1_5_year');\r",
+							"//      pm.expect(respData).to.have.property('qa_salary_after_12_months');\r",
+							"//      pm.expect(respData).to.have.property('qa_salary_after_6_months');\r",
+							"//      pm.expect(respData).to.have.property('start_qa_salary');\r",
+							"// });\r",
+							"\r",
+							"pm.test(\"Проверка валидности схемы json\", function () {\r",
+							"    let schema = {\r",
+							"    \"type\": \"object\",\r",
+							"    \"properties\": {\r",
+							"        \"person\": {\r",
+							"            \"type\": \"object\",\r",
+							"            \"properties\": {\r",
+							"                \"u_age\": { \"type\": \"integer\" },\r",
+							"                \"u_name\": {\r",
+							"                    \"type\": \"array\",\r",
+							"                    \"items\": [\r",
+							"                        { \"type\": \"string\" },\r",
+							"                        { \"type\": \"integer\" },\r",
+							"                        { \"type\": \"integer\" }\r",
+							"                    ]\r",
+							"                },\r",
+							"                \"u_salary_1_5_year\": { \"type\": \"integer\" }\r",
+							"            },\r",
+							"            \"required\": [\"u_age\", \"u_name\", \"u_salary_1_5_year\"]\r",
+							"        },\r",
+							"        \"qa_salary_after_12_months\": { \"type\": \"number\" },\r",
+							"        \"qa_salary_after_6_months\": { \"type\": \"integer\" },\r",
+							"        \"start_qa_salary\": { \"type\": \"integer\" }\r",
+							"    },\r",
+							"    \"required\": [\r",
+							"        \"person\",\r",
+							"        \"qa_salary_after_12_months\",\r",
+							"        \"qa_salary_after_6_months\",\r",
+							"        \"start_qa_salary\"\r",
+							"    ]\r",
+							"};\r",
+							"    pm.expect(tv4.validate(respData, schema)).to.be.true;\r",
 							"});\r",
+							"\r",
 							"\r",
 							"pm.test(\"Проверка коэффициентов salary\", function () {\r",
 							"    pm.expect(respData.start_qa_salary).to.eql(reqData.salary);\r",
@@ -361,6 +396,16 @@
 			"response": []
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token_login}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -368,10 +413,10 @@
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
-					"pm.request.headers.add({\r",
-					"    key: 'Authorization',\r",
-					"    value: \"{token_login}\"\r",
-					"});"
+					"// pm.request.headers.add({\r",
+					"//     key: 'Authorization',\r",
+					"//     value: \"{token_login}\"\r",
+					"// });"
 				]
 			}
 		},
